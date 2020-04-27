@@ -21,13 +21,18 @@ public class Empleado implements Serializable {
 	@Column(name="id_Empleado")
 	private Integer idEmpleado;
 	
+	//No puede ser vacio 
+	@Column(nullable=false)
 	private String nombre;
+	@Column(nullable=false)
 	private String apellido;
 	
-	@Column(name="numero_Identificacion")
+	@Column(name="numero_Identificacion", nullable=false, unique=true)
 	private String numeroIdentificacion;
+	
 	private Long telefono;
 	private Long celular;
+	@Column(nullable=false)
 	private String email;
 	
 	@Column(name="fecha_Contrato")

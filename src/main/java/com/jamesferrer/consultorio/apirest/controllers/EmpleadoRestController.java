@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+//import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jamesferrer.consultorio.apirest.models.entity.Empleado;
@@ -58,7 +58,7 @@ public class EmpleadoRestController {
 		}
 		
 		if(empleado == null) {
-			response.put("mensaje", "El cliente con ID: ".concat(idEmpleado.toString().concat(" no existe en la base de datos!")));
+			response.put("mensaje", "El empleado con ID: ".concat(idEmpleado.toString().concat(" no existe en la base de datos!")));
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 		
@@ -67,16 +67,36 @@ public class EmpleadoRestController {
 	}
 	
 	@PostMapping("/empleados")
-	@ResponseStatus(HttpStatus.CREATED)
-	public Empleado create(@RequestBody Empleado empleado) {
-		return empleadoService.save(empleado);
+	public ResponseEntity<?> create(@RequestBody Empleado empleado) {
+		
+		Empleado empleadoNew = null;
+		Map<String, Object> response = new HashMap<>();
+		try {
+			empleadoNew = empleadoService.save(empleado);
+		}catch(DataAccessException e){
+			response.put("mensaje", "Error en crear el registro en la base de datos");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		response.put("mensaje", "El empleado ha sido creado con éxito!");
+		response.put("empleado", empleadoNew);
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/empleados/{idEmpleado}")
-	@ResponseStatus(HttpStatus.CREATED)
-	public Empleado update(@RequestBody Empleado empleado, @PathVariable Integer idEmpleado) {
-		Empleado empleadoActual = empleadoService.findById(idEmpleado);
+	public ResponseEntity<?> update(@RequestBody Empleado empleado, @PathVariable Integer idEmpleado) {
 		
+		Empleado empleadoActual = empleadoService.findById(idEmpleado);
+		Empleado empleadoUpdate = null;
+		Map<String, Object> response = new HashMap<>();
+		
+		if(empleadoActual == null) {
+			response.put("mensaje", "Error: no se pudo editar del empleado con ID: ".concat(idEmpleado.toString().concat(" no existe en la base de datos!")));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+		}
+		
+		try {
 		empleadoActual.setNombre(empleado.getNombre());
 		empleadoActual.setApellido(empleado.getApellido());
 		empleadoActual.setNumeroIdentificacion(empleado.getNumeroIdentificacion());
@@ -85,13 +105,34 @@ public class EmpleadoRestController {
 		empleadoActual.setEmail(empleado.getEmail());
 		empleadoActual.setFecha_Contrato(empleado.getFechaContrato());
 		
-		return empleadoService.save(empleadoActual);
+		empleadoUpdate = empleadoService.save(empleadoActual);
+		}catch(DataAccessException e){
+			response.put("mensaje", "Error al actualizar el registro en la base de datos");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		response.put("mensaje", "El empleado ha sido actualizado con éxito!");
+		response.put("empleado", empleadoUpdate);
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping("/empleados/{idEmpleado}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@PathVariable Integer idEmpleado) {
-		empleadoService.delete(idEmpleado);
+	public ResponseEntity<?> delete(@PathVariable Integer idEmpleado) {
+		
+		Map<String, Object> response = new HashMap<>();
+		
+		try {
+			empleadoService.delete(idEmpleado);
+		}catch(DataAccessException e){
+			response.put("mensaje", "Error al eliminar el registro en la base de datos");
+			response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		response.put("mensaje", "El empleado ha sido eliminado con éxito!");
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+		
 	}
 
 }
