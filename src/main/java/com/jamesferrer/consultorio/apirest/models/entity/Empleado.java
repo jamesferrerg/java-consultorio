@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="empleados")
@@ -23,15 +26,23 @@ public class Empleado implements Serializable {
 	
 	//No puede ser vacio 
 	@Column(nullable=false)
+	@NotEmpty(message = "no puede estar vacio.")
+	@Size(min=3, max=50, message = "debe tener un tamaño entre 3 y 50 caracteres")
 	private String nombre;
+	
 	@Column(nullable=false)
+	@NotEmpty(message = "no puede estar vacio")
 	private String apellido;
 	
+	@NotEmpty(message = "no puede estar vacio")
 	@Column(name="numero_Identificacion", nullable=false, unique=true)
 	private String numeroIdentificacion;
 	
 	private Long telefono;
+	
 	private Long celular;
+	
+	@Email(message = "no es una dirección de correo bien formada")
 	@Column(nullable=false)
 	private String email;
 	

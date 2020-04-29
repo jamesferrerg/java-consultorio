@@ -1,13 +1,19 @@
 package com.jamesferrer.consultorio.apirest.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,10 +73,39 @@ public class EmpleadoRestController {
 	}
 	
 	@PostMapping("/empleados")
-	public ResponseEntity<?> create(@RequestBody Empleado empleado) {
+	// Antes de ingresar al metodo create se valida con al anotacion @Valid	
+	// Luego inyectar en el metodo todos los mensajes de error del objeto con BindingResult
+	public ResponseEntity<?> create(@Valid @RequestBody Empleado empleado, BindingResult result) {
 		
 		Empleado empleadoNew = null;
 		Map<String, Object> response = new HashMap<>();
+		
+		if(result.hasErrors()) {
+			/* Esta es la forma anterior a jdk8
+			// Se debe crear una lista que tenga los tipos de errores
+			List<String> errors = new ArrayList<>();
+			
+			// Con lo siguiente retorna una lista de errores
+			for(FieldError err: result.getFieldErrors()){
+				// con getField se obtiene el nombre del campo
+				errors.add("El campo '" + err.getField() +"' " + err.getDefaultMessage());
+			}
+			*/
+			// Convertir la lista en un stream
+			List<String> errors = result.getFieldErrors()
+					.stream()
+					/*  map: a medida que los items se estan emitiendo de los elementos tipo error, es decir
+					 por cada fieldError se convierte en un String. Ademas se convierte map() de stream del tipo
+					 error a un tipo String o texto. Tambien map que por cada elemento lo convertimos con funciones
+					 de flecha */
+					.map(err -> "El campo '" + err.getField() +"' " + err.getDefaultMessage())
+					/* Ahora convertir el flujo en un String, es decir convertir de regreso al stream a un tipo 
+					 list usando el collect*/
+					.collect(Collectors.toList());
+			
+			response.put("errors", errors);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+		}
 		try {
 			empleadoNew = empleadoService.save(empleado);
 		}catch(DataAccessException e){
@@ -85,11 +120,23 @@ public class EmpleadoRestController {
 	}
 	
 	@PutMapping("/empleados/{idEmpleado}")
-	public ResponseEntity<?> update(@RequestBody Empleado empleado, @PathVariable Integer idEmpleado) {
+	public ResponseEntity<?> update(@Valid @RequestBody Empleado empleado, BindingResult result, @PathVariable Integer idEmpleado) {
 		
 		Empleado empleadoActual = empleadoService.findById(idEmpleado);
 		Empleado empleadoUpdate = null;
 		Map<String, Object> response = new HashMap<>();
+		
+		if(result.hasErrors()) {
+
+			List<String> errors = result.getFieldErrors()
+					.stream()
+
+					.map(err -> "El campo '" + err.getField() +"' " + err.getDefaultMessage())
+					.collect(Collectors.toList());
+			
+			response.put("errors", errors);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+		}
 		
 		if(empleadoActual == null) {
 			response.put("mensaje", "Error: no se pudo editar del empleado con ID: ".concat(idEmpleado.toString().concat(" no existe en la base de datos!")));
