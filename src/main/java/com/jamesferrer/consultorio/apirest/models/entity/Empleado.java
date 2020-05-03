@@ -13,6 +13,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -46,9 +47,12 @@ public class Empleado implements Serializable {
 	@Column(nullable=false)
 	private String email;
 	
+	@NotNull(message = "no puede estar vacio")
 	@Column(name="fecha_Contrato")
 	@Temporal(TemporalType.DATE)
 	private Date fechaContrato;
+	
+	private String foto;
 
 	public Integer getIdEmpleado() {
 		return idEmpleado;
@@ -112,6 +116,14 @@ public class Empleado implements Serializable {
 
 	public void setFecha_Contrato(Date fechaContrato) {
 		this.fechaContrato = fechaContrato;
+	}
+	
+	public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
 	}
 	
 	/**
