@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.jamesferrer.consultorio.apirest.models.entity.Empleado;
+import com.jamesferrer.consultorio.apirest.models.entity.TipoIdentificacion;
 import com.jamesferrer.consultorio.apirest.models.services.IEmpleadoService;
 import com.jamesferrer.consultorio.apirest.models.services.IUploadFileService;
 
@@ -177,7 +178,8 @@ public class EmpleadoRestController {
 		empleadoActual.setCelular(empleado.getCelular());
 		empleadoActual.setTelefono(empleado.getTelefono());
 		empleadoActual.setEmail(empleado.getEmail());
-		empleadoActual.setFecha_Contrato(empleado.getFechaContrato());
+		empleadoActual.setFechaContrato(empleado.getFechaContrato());
+		empleadoActual.setTipoIdentificacion(empleado.getTipoIdentificacion());
 		
 		empleadoUpdate = empleadoService.save(empleadoActual);
 		}catch(DataAccessException e){
@@ -265,6 +267,12 @@ public class EmpleadoRestController {
 		cabecera.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"");
 		
 		return new ResponseEntity<Resource>(recurso, cabecera, HttpStatus.OK);
+	}
+	
+	@GetMapping("/empleados/tiposIdentificacion")
+	public List<TipoIdentificacion> listarTiposIdentificacion(){
+		
+		return empleadoService.findAllTiposIdentificacion();
 	}
 
 }

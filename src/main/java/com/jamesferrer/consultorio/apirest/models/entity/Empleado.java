@@ -5,9 +5,12 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -15,6 +18,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="empleados")
@@ -53,6 +58,12 @@ public class Empleado implements Serializable {
 	private Date fechaContrato;
 	
 	private String foto;
+	
+	@NotNull(message="el tipo de identificación no puede estar vacia.")
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="tipo_Identificacion_Id")
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	private TipoIdentificacion tipoIdentificacion;
 
 	public Integer getIdEmpleado() {
 		return idEmpleado;
@@ -114,7 +125,7 @@ public class Empleado implements Serializable {
 		return fechaContrato;
 	}
 
-	public void setFecha_Contrato(Date fechaContrato) {
+	public void setFechaContrato(Date fechaContrato) {
 		this.fechaContrato = fechaContrato;
 	}
 	
@@ -126,6 +137,14 @@ public class Empleado implements Serializable {
 		this.foto = foto;
 	}
 	
+	public TipoIdentificacion getTipoIdentificacion() {
+		return tipoIdentificacion;
+	}
+
+	public void setTipoIdentificacion(TipoIdentificacion tipoIdentificacion) {
+		this.tipoIdentificacion = tipoIdentificacion;
+	}
+
 	/**
 	 * 
 	 */

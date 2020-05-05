@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jamesferrer.consultorio.apirest.models.dao.IEmpleadoDao;
 import com.jamesferrer.consultorio.apirest.models.entity.Empleado;
+import com.jamesferrer.consultorio.apirest.models.entity.TipoIdentificacion;
 
 @Service
 public class EmpleadoServiceImpl implements IEmpleadoService{
@@ -51,6 +52,13 @@ public class EmpleadoServiceImpl implements IEmpleadoService{
 		
 		empleadoDao.deleteById(idEmpleado);
 		
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<TipoIdentificacion> findAllTiposIdentificacion() {
+		
+		return empleadoDao.findAllTiposIdentificacion();
 	}
 
 }
