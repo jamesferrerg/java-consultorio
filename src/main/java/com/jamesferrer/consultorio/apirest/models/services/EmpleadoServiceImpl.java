@@ -1,10 +1,19 @@
 package com.jamesferrer.consultorio.apirest.models.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,8 +21,10 @@ import com.jamesferrer.consultorio.apirest.models.dao.IEmpleadoDao;
 import com.jamesferrer.consultorio.apirest.models.entity.Empleado;
 import com.jamesferrer.consultorio.apirest.models.entity.TipoIdentificacion;
 
+//antes de realizar el jwt estaba sin el implements
+//se usa el implements para implementar el login springsegurity
 @Service
-public class EmpleadoServiceImpl implements IEmpleadoService{
+public class EmpleadoServiceImpl implements IEmpleadoService, UserDetailsService{
 
 	// injectar el empleadoDao 
 	@Autowired
@@ -60,5 +71,39 @@ public class EmpleadoServiceImpl implements IEmpleadoService{
 		
 		return empleadoDao.findAllTiposIdentificacion();
 	}
+	
+	// inicio jwt
+	
+	// manejo de error al iniciar sesion o login
+	private Logger logger = LoggerFactory.getLogger(EmpleadoServiceImpl.class);
+
+	@Override
+	@Transactional(readOnly = true)
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		Empleado empleado = empleadoDao.findByUsername(username);
+		
+		if(empleado == null) {
+			logger.error("Error en el login: no existe el usuario '"+username+"' en el sistema!");
+			throw new UsernameNotFoundException("Error en el login: no existe el usuario '"+username+"' en el sistema!");
+		}
+		
+		// Debe convertirse Roles en un tipo GrantedAithority con stream...
+		List<GrantedAuthority> authorities = empleado.getRoles()
+				.stream()
+				.map(rol -> new SimpleGrantedAuthority(rol.getNombreRol()))
+				.peek(authority -> logger.info("Rol: "+ authority.getAuthority()))
+				.collect(Collectors.toList());
+		
+		return new User(empleado.getUsername(), empleado.getPassword(), empleado.getHabilitado(), true, true, true, authorities);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Empleado findByUsername(String username) {
+		
+		return empleadoDao.findByUsername(username);
+	}
+	
+	// fin jwt
 
 }

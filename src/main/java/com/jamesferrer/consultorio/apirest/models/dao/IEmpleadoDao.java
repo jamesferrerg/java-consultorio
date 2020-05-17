@@ -12,4 +12,7 @@ public interface IEmpleadoDao extends JpaRepository<Empleado, Integer>{
 	
 	@Query("from TipoIdentificacion")
 	public List<TipoIdentificacion> findAllTiposIdentificacion();
+	
+	// La opcion recomendad es findByUsername pero en la base de datos no hay atributo username sino email
+	public Empleado findByUsername(String username);
 }

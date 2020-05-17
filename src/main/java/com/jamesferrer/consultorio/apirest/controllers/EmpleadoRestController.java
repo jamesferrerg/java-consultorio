@@ -26,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -71,6 +72,7 @@ public class EmpleadoRestController {
 		return empleadoService.findAll(pageable);	
 	}
 	
+	@Secured({"ROLE_USER", "ROLE_ADMIN"})
 	@GetMapping("/empleados/{idEmpleado}")
 	/* Clase ResponseEntity: Un componente o clase que maneja un mensaje de error y poder 
 	pasar nuestro objeto, la clase entity a la respuesta al responseBody. Cambiando de la siguiente manera
@@ -100,6 +102,7 @@ public class EmpleadoRestController {
 		return new ResponseEntity<Empleado>(empleado, HttpStatus.OK);
 	}
 	
+	@Secured("ROLE_ADMIN")
 	@PostMapping("/empleados")
 	// Antes de ingresar al metodo create se valida con al anotacion @Valid	
 	// Luego inyectar en el metodo todos los mensajes de error del objeto con BindingResult
@@ -147,6 +150,7 @@ public class EmpleadoRestController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 	
+	@Secured("ROLE_ADMIN")
 	@PutMapping("/empleados/{idEmpleado}")
 	public ResponseEntity<?> update(@Valid @RequestBody Empleado empleado, BindingResult result, @PathVariable Integer idEmpleado) {
 		
@@ -177,7 +181,7 @@ public class EmpleadoRestController {
 		empleadoActual.setNumeroIdentificacion(empleado.getNumeroIdentificacion());
 		empleadoActual.setCelular(empleado.getCelular());
 		empleadoActual.setTelefono(empleado.getTelefono());
-		empleadoActual.setEmail(empleado.getEmail());
+		empleadoActual.setUsername(empleado.getUsername());
 		empleadoActual.setFechaContrato(empleado.getFechaContrato());
 		empleadoActual.setTipoIdentificacion(empleado.getTipoIdentificacion());
 		
@@ -193,6 +197,7 @@ public class EmpleadoRestController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 	
+	@Secured("ROLE_ADMIN")
 	@DeleteMapping("/empleados/{idEmpleado}")
 	public ResponseEntity<?> delete(@PathVariable Integer idEmpleado) {
 		
@@ -218,6 +223,7 @@ public class EmpleadoRestController {
 	}
 	
 	// Implementacion de metodo para subir imagenes
+	@Secured({"ROLE_USER", "ROLE_ADMIN"})
 	@PostMapping("/empleados/upload")
 	public ResponseEntity<?> update(@RequestParam("archivo") MultipartFile archivo, @RequestParam("idEmpleado") Integer idEmpleado){
 		
@@ -249,6 +255,7 @@ public class EmpleadoRestController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 	
+	@Secured({"ROLE_USER", "ROLE_ADMIN"})
 	@GetMapping("/uploads/img/{nombreFoto:.+}")
 	public ResponseEntity<Resource> verFoto(@PathVariable String nombreFoto){
 		
@@ -269,6 +276,7 @@ public class EmpleadoRestController {
 		return new ResponseEntity<Resource>(recurso, cabecera, HttpStatus.OK);
 	}
 	
+	@Secured({"ROLE_USER", "ROLE_ADMIN"})
 	@GetMapping("/empleados/tiposIdentificacion")
 	public List<TipoIdentificacion> listarTiposIdentificacion(){
 		

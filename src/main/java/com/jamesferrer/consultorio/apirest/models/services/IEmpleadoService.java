@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import com.jamesferrer.consultorio.apirest.models.entity.Empleado;
 import com.jamesferrer.consultorio.apirest.models.entity.TipoIdentificacion;
 
-public interface IEmpleadoService {
+public interface IEmpleadoService{
 
 	public List<Empleado> findAll();
 	
@@ -21,5 +21,7 @@ public interface IEmpleadoService {
 	public void delete(Integer idEmpleado);
 	
 	public List<TipoIdentificacion> findAllTiposIdentificacion();
+	
+	public Empleado findByUsername(String username);
 
 }
