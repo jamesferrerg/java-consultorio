@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -40,9 +41,9 @@ public class PacienteRestController {
 	
 	@Secured({"ROLE_USER", "ROLE_ADMIN"})
 	@GetMapping("/pacientes")
-	public List<Paciente> index(){
+	public ResponseEntity<?> index(){
 		
-		return pacienteService.findAll();
+		return ResponseEntity.ok().body(pacienteService.findAll());
 	}
 	
 	@Secured({"ROLE_USER", "ROLE_ADMIN"})
@@ -195,6 +196,13 @@ public class PacienteRestController {
 	public List<Municipio> listarMunicipios(){
 		
 		return pacienteService.findAllMunicipio();
+	}
+	
+	@Secured({"ROLE_USER", "ROLE_ADMIN"})
+	@GetMapping("/pacientes/pagina")
+	public ResponseEntity<?> index(Pageable pageable){
+		
+		return ResponseEntity.ok().body(pacienteService.findAll(pageable));
 	}
 
 }

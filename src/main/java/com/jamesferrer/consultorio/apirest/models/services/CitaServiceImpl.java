@@ -3,6 +3,8 @@ package com.jamesferrer.consultorio.apirest.models.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,6 +67,12 @@ public class CitaServiceImpl implements ICitaService {
 	public List<Empleado> findAllEmpleado() {
 		
 		return citaDao.findAllEmpleado();
+	}
+
+	@Override
+	public Page<Cita> findAll(Pageable pageable) {
+		
+		return citaDao.findAll(pageable);
 	}
 
 }

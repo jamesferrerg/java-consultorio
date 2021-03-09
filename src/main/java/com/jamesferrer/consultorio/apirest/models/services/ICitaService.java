@@ -2,6 +2,9 @@ package com.jamesferrer.consultorio.apirest.models.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.jamesferrer.consultorio.apirest.models.entity.Cita;
 import com.jamesferrer.consultorio.apirest.models.entity.Empleado;
 import com.jamesferrer.consultorio.apirest.models.entity.Paciente;
@@ -22,4 +25,6 @@ public interface ICitaService {
 	public List<Paciente> findAllPaciente();
 	
 	public List<Empleado> findAllEmpleado();
+	
+	public Page<Cita> findAll(Pageable pageable);
 }

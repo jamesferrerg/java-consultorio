@@ -2,6 +2,9 @@ package com.jamesferrer.consultorio.apirest.models.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.jamesferrer.consultorio.apirest.models.entity.Departamento;
 import com.jamesferrer.consultorio.apirest.models.entity.Municipio;
 import com.jamesferrer.consultorio.apirest.models.entity.Paciente;
@@ -25,4 +28,8 @@ public interface IPacienteService {
 	public List<Departamento> findAllDepartamento();
 	
 	public List<Municipio> findAllMunicipio();
+	
+	public List<Paciente> findByNombreOrApellido(String term2);
+	
+	public Page<Paciente> findAll(Pageable pageable);
 }

@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -28,6 +29,8 @@ import com.jamesferrer.consultorio.apirest.models.entity.Empleado;
 import com.jamesferrer.consultorio.apirest.models.entity.Paciente;
 import com.jamesferrer.consultorio.apirest.models.entity.Servicio;
 import com.jamesferrer.consultorio.apirest.models.services.ICitaService;
+import com.jamesferrer.consultorio.apirest.models.services.IEmpleadoService;
+import com.jamesferrer.consultorio.apirest.models.services.IPacienteService;
 
 @CrossOrigin(origins = {"http://localhost:4200", "*"})
 @RestController
@@ -37,11 +40,17 @@ public class CitaRestController {
 	@Autowired
 	private ICitaService citaService;
 	
+	@Autowired
+	private IEmpleadoService empleadoService;
+	
+	@Autowired
+	private IPacienteService pacienteService;
+	
 	@Secured({"ROLE_USER", "ROLE_ADMIN"})
 	@GetMapping("/citas")
-	public List<Cita> index(){
+	public ResponseEntity<?> index(){
 		
-		return citaService.findAll();
+		return ResponseEntity.ok().body(citaService.findAll());
 	}
 	
 	@Secured({"ROLE_USER", "ROLE_ADMIN"})
@@ -178,6 +187,25 @@ public class CitaRestController {
 		response.put("mensaje", "La cita ha sido actualizada con éxito");
 		response.put("cita", citaUpdate);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+	}
+	
+	@Secured({"ROLE_USER", "ROLE_ADMIN"})
+	@GetMapping("/citas/filtrar-empleados/{term1}")
+	public List<Empleado> filtrarEmpleadosDr(@PathVariable String term1){
+		return empleadoService.findEmpleadoByNombreDr(term1);
+	}
+	
+	@Secured({"ROLE_USER", "ROLE_ADMIN"})
+	@GetMapping("/citas/filtrar-pacientes/{term2}")
+	public List<Paciente> filtrarPacientes(@PathVariable String term2){
+		return pacienteService.findByNombreOrApellido(term2);
+	}
+	
+	@Secured({"ROLE_USER", "ROLE_ADMIN"})
+	@GetMapping("/citas/paginar")
+	public ResponseEntity<?> index(Pageable pageable){
+		
+		return ResponseEntity.ok().body(citaService.findAll(pageable));
 	}
 
 }

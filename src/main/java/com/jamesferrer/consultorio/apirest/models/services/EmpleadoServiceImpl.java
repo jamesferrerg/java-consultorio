@@ -106,6 +106,8 @@ public class EmpleadoServiceImpl implements IEmpleadoService, UserDetailsService
 		return new User(empleado.getUsername(), empleado.getPassword(), empleado.getHabilitado(), true, true, true, authorities);
 	}
 
+	// fin jwt
+	
 	@Override
 	@Transactional(readOnly = true)
 	public Empleado findByUsername(String username) {
@@ -117,10 +119,15 @@ public class EmpleadoServiceImpl implements IEmpleadoService, UserDetailsService
 	@Transactional(readOnly = true)
 	public List<Empleado> findEmpleadoByNombre(String term1) {
 		// puede seleccionar findByNombreOrApellido o findByNombreOrApellidoContainingIgnoreCase
-		return empleadoDao.findByNombre(term1);
+		return empleadoDao.findByNombreOrApellido(term1);
 	}
 	
-	// fin jwt
+	@Override
+	@Transactional(readOnly = true)
+	public List<Empleado> findEmpleadoByNombreDr(String term1) {
+		// puede seleccionar findByNombreOrApellido o findByNombreOrApellidoContainingIgnoreCase
+		return empleadoDao.findByNombreDr(term1);
+	}
 	
 	@Override
 	@Transactional(readOnly = true)

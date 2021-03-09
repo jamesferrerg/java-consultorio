@@ -23,8 +23,11 @@ public interface IEmpleadoDao extends JpaRepository<Empleado, Integer>{
 	@Query("from Sexo")
 	public List<Sexo> findAllSexos();
 	
-	@Query("select e from Empleado e where e.nombre like %?1%")
-	public List<Empleado> findByNombre (String term1);
+	@Query("select e from Empleado e where e.nombre like %?1% or e.apellido like %?1%")
+	public List<Empleado> findByNombreOrApellido (String term1);
+	
+	@Query("select e from Empleado e where e.nombre like %?1% and e.cargo=3")
+	public List<Empleado> findByNombreDr (String term1);
 	
 	/*
 	public List<Empleado> findByNombreOrApellidoContainingIgnoreCase (String term1, String term2);*/

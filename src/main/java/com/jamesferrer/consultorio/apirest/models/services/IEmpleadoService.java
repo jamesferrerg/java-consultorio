@@ -30,6 +30,8 @@ public interface IEmpleadoService{
 	
 	public List<Empleado> findEmpleadoByNombre (String term1);
 	
+	public List<Empleado> findEmpleadoByNombreDr (String term1);
+	
 	public <T> List<T> findNotRepeatEmpleado(String term1, Class<T> type);
 
 	public List<Cargo> findAllCargos();

@@ -3,6 +3,8 @@ package com.jamesferrer.consultorio.apirest.models.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,5 +76,21 @@ public class PacienteServiceImpl implements IPacienteService{
 		
 		return pacienteDao.findAllMunicipio();
 	}
+
+	@Override
+	@Transactional
+	public List<Paciente> findByNombreOrApellido(String term2) {
+		
+		return pacienteDao.findByNombreOrApellido(term2);
+	}
+
+	@Override
+	@Transactional
+	public Page<Paciente> findAll(Pageable pageable) {
+		
+		return pacienteDao.findAll(pageable);
+	}
+	
+	
 
 }

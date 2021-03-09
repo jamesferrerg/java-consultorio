@@ -26,5 +26,8 @@ public interface IPacienteDao extends JpaRepository<Paciente, Long>{
 	public List<Municipio> findAllMunicipio();
 	
 	public Paciente findByNumeroIdentificacion(String numeroIdentificacion);
+	
+	@Query("select p from Paciente p where p.nombre like %?1% or p.apellido like %?1%")
+	public List<Paciente> findByNombreOrApellido(String term2);
 
 }

@@ -28,17 +28,17 @@ public class Cita implements Serializable {
 	@Column(name = "id_cita")
 	private Integer idCita;
 
-	@NotNull(message = "\"fecha de cita\" no puede estar vacio")
+	@NotNull(message = "\"la fecha\" no puede estar vacio")
 	@Temporal(TemporalType.DATE)
 	private Date fecha;
 
-	@NotEmpty(message = "\"hora programada\" no puede estar vacio")
+	@NotEmpty(message = "\"la hora\" no puede estar vacio")
 	private String hora;
 
 	@NotNull(message = "\"costo\" no puede estar vacio")
 	private Integer costo;
 	
-	private Byte saldo;
+	private Boolean saldo;
 
 	@JoinColumn(name = "servicio_id")
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -48,7 +48,7 @@ public class Cita implements Serializable {
 
 	@JoinColumn(name = "paciente_id")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@NotNull(message = "\"datos del paciente\" no puede estar vacio")
+	@NotNull(message = "\"nombre del paciente\" no puede estar vacio")
 	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	private Paciente paciente;
 
@@ -114,11 +114,11 @@ public class Cita implements Serializable {
 		this.empleado = empleado;
 	}
 
-	public Byte getSaldo() {
+	public Boolean getSaldo() {
 		return saldo;
 	}
 
-	public void setSaldo(Byte saldo) {
+	public void setSaldo(Boolean saldo) {
 		this.saldo = saldo;
 	}
 
