@@ -1,5 +1,6 @@
 package com.jamesferrer.consultorio.apirest.models.services;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,9 +71,20 @@ public class CitaServiceImpl implements ICitaService {
 	}
 
 	@Override
+	@Transactional
 	public Page<Cita> findAll(Pageable pageable) {
 		
 		return citaDao.findAll(pageable);
 	}
+	
+	@Override
+	@Transactional
+	public Page<Cita> findByFecha(Date fecha, Pageable pageable) {
+		
+		return citaDao.findByFecha(fecha, pageable);
+	}
+
+
+	
 
 }

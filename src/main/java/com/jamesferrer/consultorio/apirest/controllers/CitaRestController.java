@@ -1,5 +1,7 @@
 package com.jamesferrer.consultorio.apirest.controllers;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +11,9 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jamesferrer.consultorio.apirest.models.entity.Cita;
@@ -203,9 +208,22 @@ public class CitaRestController {
 	
 	@Secured({"ROLE_USER", "ROLE_ADMIN"})
 	@GetMapping("/citas/paginar")
-	public ResponseEntity<?> index(Pageable pageable){
+	public ResponseEntity<?> index(@RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fecha, Pageable pageable){
 		
-		return ResponseEntity.ok().body(citaService.findAll(pageable));
+		// Fuente paginacion https://bezkoder.com/spring-boot-pagination-filter-jpa-pageable/
+		try {
+			
+			if (fecha==null) {
+				
+				return ResponseEntity.ok().body(citaService.findAll(pageable));
+			} else {
+				
+				return ResponseEntity.ok().body(citaService.findByFecha(fecha, pageable));
+			}
+			
+		} catch(Exception e){
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }

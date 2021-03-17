@@ -1,5 +1,6 @@
 package com.jamesferrer.consultorio.apirest.models.services;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -27,4 +28,6 @@ public interface ICitaService {
 	public List<Empleado> findAllEmpleado();
 	
 	public Page<Cita> findAll(Pageable pageable);
+	
+	public Page<Cita> findByFecha(Date fecha, Pageable pageable);
 }
