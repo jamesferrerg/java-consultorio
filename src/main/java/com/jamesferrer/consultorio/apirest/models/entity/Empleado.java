@@ -48,7 +48,7 @@ public class Empleado implements Serializable {
 	
 	@NotEmpty(message = "\"número de identificación\" no puede estar vacio")
 	@Column(name="numero_Identificacion", nullable=false, unique=true)
-	@UniqueNumeroIdentificacion(message="\"número de identificación\" ya existe!")
+	//@UniqueNumeroIdentificacion(message="\"número de identificación\" ya existe!")
 	private String numeroIdentificacion;
 	
 	private Long telefono;

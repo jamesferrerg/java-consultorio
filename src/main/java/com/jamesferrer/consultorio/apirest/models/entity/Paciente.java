@@ -44,7 +44,7 @@ public class Paciente implements Serializable {
 	@Size(min = 3, max = 50, message = "\"apellido\" debe tener un tamaño entre 3 y 50 caracteres")
 	private String apellido;
 
-	@NotNull(message = "\"fecha de nacimiento\" no puede estar vacio")
+	//@NotNull(message = "\"fecha de nacimiento\" no puede estar vacio")
 	@Column(name="fecha_nacimiento")
 	@Temporal(TemporalType.DATE)
 	private Date fechaNacimiento;
@@ -54,7 +54,7 @@ public class Paciente implements Serializable {
 	@Email(message = "\"email\" no es un correo electronico")
 	private String email;
 
-	@NotEmpty(message = "\"direccion\" no puede estar vacio")
+	//@NotEmpty(message = "\"direccion\" no puede estar vacio")
 	@Column(nullable = false)
 	private String direccion;
 
@@ -70,20 +70,20 @@ public class Paciente implements Serializable {
 
 	private String aseguradora;
 	
-	@NotEmpty(message = "\"número de identificación\" no puede estar vacio")
+	//@NotEmpty(message = "\"número de identificación\" no puede estar vacio")
 	@Column(name="numero_identificacion", unique = true)
-	@UniqueNumIdentPaciente(message="\"número de identificación\" ya existe!")
+	//@UniqueNumIdentPaciente(message="\"número de identificación\" ya existe!")
 	private String numeroIdentificacion;
 	
 	@JoinColumn(name="tipo_identificacion_id")
 	@ManyToOne(fetch=FetchType.LAZY)
-	@NotNull(message="\"tipo de identificación\" no puede estar vacio")
+	//@NotNull(message="\"tipo de identificación\" no puede estar vacio")
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	private TipoIdentificacion tipoIdentificacion;
 	
 	@JoinColumn(name="sexo_id")
 	@ManyToOne(fetch=FetchType.LAZY)
-	@NotNull(message="\"sexo\" no puede estar vacio")
+	//@NotNull(message="\"sexo\" no puede estar vacio")
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	private Sexo sexo;
 	
@@ -109,9 +109,13 @@ public class Paciente implements Serializable {
 
 	@PrePersist
 	public void calculoEdad() {
-		LocalDate date = fechaNacimiento.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		LocalDate ahora = LocalDate.now();
-		this.edad = Period.between(date, ahora).getYears();
+		if (this.edad!=null) {			
+			LocalDate date = fechaNacimiento.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate ahora = LocalDate.now();
+			this.edad = Period.between(date, ahora).getYears();
+		}else {
+			this.edad=0;
+		}
 	}
 
 	public Long getIdPaciente() {
